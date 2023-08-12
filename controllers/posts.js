@@ -322,8 +322,8 @@ export const payment = async (req, res) => {
           quantity: "1",
         };
       }),
-      success_url: `http://15.206.220.197:5000/api/successPayment/${userId}`,
-      cancel_url: `http://15.206.220.197:5000/api/successPayment/${userId}`,
+      success_url: `https://api.stockroots.in/api/successPayment/${userId}`,
+      cancel_url: `https://api.stockroots.in/api/successPayment/${userId}`,
 
 
     });

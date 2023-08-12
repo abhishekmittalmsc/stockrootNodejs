@@ -16,6 +16,15 @@ app.get("/", function (req, res) {
   res.send("Hello World!");
 });
 
+const setCOOPHeader = (req, res, next) => {
+  // Set the COOP header to 'same-origin-allow-popups' for all requests
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+};
+
+// Apply the middleware globally
+app.use(setCOOPHeader);
+
 const CONNECTION_URL = 'mongodb+srv://abhishekmittalmsc:Welcome@12345@cluster0.xumjs83.mongodb.net/?retryWrites=true&w=majority';
 const PORT = process.env.PORT|| 8001;
 
