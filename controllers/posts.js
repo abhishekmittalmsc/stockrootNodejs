@@ -159,7 +159,7 @@ export const addToCart = async (req, res) => {
   const { course, userData } = req.body;
   const courseId = course._id;
   // const userId = userData._id;
-  const userId = "6473577562393e605c44d0de";
+  const userId = userData._id;
 
   try {
     const userDetails = await UserRegistration.findOne({ _id: userId });
@@ -179,13 +179,10 @@ export const addToCart = async (req, res) => {
 };
 
 export const CartData = async (req, res) => {
-  // const token=req.body.token
-  try {
-    // const decodedToken = jwt.verify(token, 'Welcome@12345');
-    // const userDetails = await UserRegistration.findOne({ _id: decodedToken._id });
-    const userDetails = await UserRegistration.findOne({
-      _id: "6473577562393e605c44d0de",
-    });
+  const token=req.body.token
+ try {
+    const decodedToken = jwt.verify(token, 'Welcome@12345');
+    const userDetails = await UserRegistration.findOne({ _id: decodedToken._id });
 
     if (!userDetails || userDetails.cart === null) {
       res.status(404).json({ message: "User not found or cart is empty" });
@@ -281,7 +278,6 @@ export const NirmalFormSubmit = async (req, res) => {
 };
 
 export const courseDetails = async (req, res) => {
-  console.log("called courseDetails", req.params.courseId);
   const courseId = req.params.courseId;
   try {
     const courseDetails = await CoursesMaster.findOne({ _id: courseId });

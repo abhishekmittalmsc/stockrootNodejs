@@ -26,7 +26,7 @@ const CONNECTION_URL = 'mongodb+srv://abhishekmittalmsc:Welcome@12345@cluster0.x
 const PORT = process.env.PORT|| 8001;
 
 mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))
+  .then(() => app.listen(PORT, () => console.log(`Server Running on Port: https://api.stockroots.in:${PORT}`)))
   .catch((error) => console.log(`${error} did not connect`));
 
   // const sampleCourse = new CoursesMaster({
