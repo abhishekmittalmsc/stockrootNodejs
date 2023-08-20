@@ -156,6 +156,7 @@ export const allCourses = async (req, res) => {
 };
 
 export const addToCart = async (req, res) => {
+  console.log('add to cart called', req.body)
   const { course, userData } = req.body;
   const courseId = course._id;
   // const userId = userData._id;
@@ -319,7 +320,7 @@ export const payment = async (req, res) => {
         };
       }),
       success_url: `https://api.stockroots.in/api/successPayment/${userId}`,
-      cancel_url: `https://api.stockroots.in/api/successPayment/${userId}`,
+      cancel_url: `https://www.stockroots.in/dashboard`,
 
 
     });
@@ -358,7 +359,7 @@ export const successPayment = async (req, res) => {
     }
 
     // Respond to the client
-    res.status(200).json({ message: 'Payment successful' });
+    res.redirect('https://www.stockroots.in/dashboard'); // Replace with the actual URL
   } catch (error) {
     console.error('Error moving cart data to courses:', error);
     res.status(500).json({ error });
