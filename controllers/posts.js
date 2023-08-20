@@ -142,7 +142,7 @@ export const userDetails = async (req, res) => {
 
 export const allCourses = async (req, res) => {
   try {
-    const courseData = await CoursesMaster.find();
+    const courseData = await CoursesMaster.find().select('-chapters'); // Exclude the 'chapters' field
 
     if (courseData) {
       res.status(200).json(courseData);
