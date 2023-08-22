@@ -10,6 +10,7 @@ import { sendEmailToAdmin, sendEmailToUser } from "../middleware/Mailers.js";
 import { sendWhatsAppMessage } from "../middleware/Whatsapp.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const  ObjectID = require('mongoose').ObjectId;
 
 const router = express.Router();
 
@@ -121,6 +122,22 @@ export const checkExisting = async (req, res) => {
   }
 };
 
+function removeDuplicates(arr) {
+  const uniqueValues = new Set();
+  const result = [];
+
+  for (const item of arr) {
+    const stringified = JSON.stringify(item);
+    if (!uniqueValues.has(stringified)) {
+      result.push(item);
+      uniqueValues.add(stringified);
+    }
+  }
+
+  return result;
+}
+
+
 export const userDetails = async (req, res) => {
   const token = req.body.token;
   try {
@@ -128,6 +145,7 @@ export const userDetails = async (req, res) => {
     const userId = decodedToken._id;
     const email = decodedToken.email;
     const user = await UserRegistration.findOne({ _id: userId });
+
 
     if (user) {
       res.status(200).json(user);
@@ -164,8 +182,8 @@ export const addToCart = async (req, res) => {
 
   try {
     const userDetails = await UserRegistration.findOne({ _id: userId });
-
-    if (userDetails) {
+  
+        if (userDetails) {
       userDetails.cart.push(courseId);
       await userDetails.save();
 
@@ -215,6 +233,16 @@ export const CourseData = async (req, res) => {
       res.status(404).json({ message: "User not found or course is empty" });
       return;
     }
+
+    if ( userDetails.courses.length === 0) {
+      
+      userDetails.courses.push(mongoose.Types.ObjectId("64a11be632143619f09c0b13"));
+      await userDetails.save()
+    }
+    userDetails.courses = removeDuplicates(userDetails.courses);
+    userDetails.cart = removeDuplicates(userDetails.cart);
+    await userDetails.save();
+
 
     const courseIds = userDetails.courses;
     const myCourses = await CoursesMaster.find({ _id: { $in: courseIds } });
