@@ -395,4 +395,79 @@ export const successPayment = async (req, res) => {
 
 };
 
+
+export const updateMobileNumber = async (req, res) => {
+  const userId = req.body.userId;
+  const phoneNumber = req.body.phoneNumber;
+
+  try {
+    // Find the user by userId and update the mobile number
+    const updatedUser = await UserRegistration.findByIdAndUpdate(userId, {
+      phoneNumber: phoneNumber,
+    }, { new: true }); // { new: true } returns the updated document
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'Mobile number updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error updating mobile number:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+export const newComment = async (req, res) => {
+  const commentData = req.body.commentData;
+  console.log('commentData', commentData);
+
+  try {
+    const courseId = commentData.courseId;
+
+    // Find the course by courseId and update the comments array
+    const updatedCourse = await CoursesMaster.findByIdAndUpdate(courseId, {
+      $push: {
+        comments: {
+          name: commentData.userDetails.name,
+          email: commentData.userDetails.email,
+          text: commentData.comment,
+        },
+      },
+    }, { new: true });
+
+    if (!updatedCourse) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    return res.status(200).json({ message: 'Comment added successfully', course: updatedCourse });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+export const commentsData = async (req, res) => {
+  const courseId = req.body.courseId;
+
+  try {
+    // Find the course by courseId
+    const course = await CoursesMaster.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Extract comments array from the course
+    const comments = course.comments;
+
+    return res.status(200).json({ comments });
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export default router;

@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {successPayment, payment, courseDetails, createUser, userDetails,checkExisting, createUserMobileLogin, createQuery, allCourses,addToCart,CartData,CourseData, removeCart, NirmalFormSubmit } from '../controllers/posts.js';
+import {commentsData, newComment, updateMobileNumber, successPayment, payment, courseDetails, createUser, userDetails,checkExisting, createUserMobileLogin, createQuery, allCourses,addToCart,CartData,CourseData, removeCart, NirmalFormSubmit } from '../controllers/posts.js';
 
 
 const router = express.Router();
@@ -19,6 +19,10 @@ router.post('/payment',payment)
 router.post('/NirmalForm',NirmalFormSubmit) 
 router.post('/coursesDetails/:courseId', courseDetails)
 router.get('/successPayment/:userId', successPayment)
+router.post('/updateMobileNumber',updateMobileNumber) 
+router.post('/newComment', newComment)
+router.post('/commentsData', commentsData)
+
 
 
 export default router;

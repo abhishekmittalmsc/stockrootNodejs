@@ -14,7 +14,8 @@ const courseSchema = new Schema({
   }],
   comments: [{
     name: { type: Schema.Types.String, required: true },
-    Text: { type: Schema.Types.String, required: true },
+    email: { type: Schema.Types.String, required: true },
+    text: { type: Schema.Types.String, required: true },
   }],
   description:[],
   content:[],
