@@ -6,11 +6,25 @@ import CoursesMaster from "../models/Courses.js";
 import NirmalForm from "../models/NirmalForm.js";
 import generateToken from "./token.js";
 import jwt from "jsonwebtoken";
-import { sendEmailToAdmin, sendEmailToUser } from "../middleware/Mailers.js";
+import { sendEmailToAdmin, sendEmailToUser, sendEmailToUserFromAdmin} from "../middleware/Mailers.js";
 import { sendWhatsAppMessage } from "../middleware/Whatsapp.js";
 import { createRequire } from "module";
+import MasterclassRegistrationSchema from '../models/Masterclass.js'
+import multer from 'multer'
+import fs from 'fs';
+import path from 'path';
+
 const require = createRequire(import.meta.url);
-const  ObjectID = require('mongoose').ObjectId;
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads'); // Specify the destination directory
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname)); // Rename the file
+  },
+});
+const upload = multer({ storage }).single('file');
 
 const router = express.Router();
 
@@ -469,5 +483,109 @@ export const commentsData = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+export const AdminAuth = async (req, res) => {
+  const secretKey="Welcome@12345"
+  const Secret = req.body.passkey; // Assuming the UID is provided in the request body
+  
+    // Check if a user with the same UID already exists
+    if (Secret === 'Welcome@12345') {
+      const token = jwt.sign({ user: 'admin' }, secretKey);
+      res.json({ token });
+    } else {
+      res.status(401).json({ error: 'Invalid passkey' });
+    }
+};
+
+export const getUserMaster = async (req, res) => {
+  const key=req.body.key;
+  if(key==="Welcome@12345"){
+    const Users=await UserRegistration.find({})
+    return res.status(200).json({ Users });
+  }
+  else {
+      res.status(401).json({ error: 'Invalid passkey' });
+    }
+};
+
+export const getNirmalData = async (req, res) => {
+  const key=req.body.key;
+  if(key==="Welcome@12345"){
+    const Nirmal=await NirmalForm.find({})
+    return res.status(200).json({ Nirmal });
+  }
+  else {
+      res.status(401).json({ error: 'Invalid passkey' });
+    }
+};
+
+export const getQueryData = async (req, res) => {
+  console.log('in get Query Data')
+  const key=req.body.key;
+  if(key==="Welcome@12345"){
+    const QueryData=await Query.find({})
+    return res.status(200).json({ QueryData });
+    console.log('querydata', QueryData)
+  }
+  else {
+      res.status(401).json({ error: 'Invalid passkey' });
+    }
+};
+
+export const getMRData = async (req, res) => {
+  console.log('in get MR Data')
+  const key=req.body.key;
+  if(key==="Welcome@12345"){
+    const MRData=await MasterclassRegistrationSchema.find({})
+    return res.status(200).json({ MRData });
+    console.log('querydata', MRData)
+  }
+  else {
+      res.status(401).json({ error: 'Invalid passkey' });
+    }
+};
+
+
+
+
+export const MasterclassRegistration = async (req, res) => {
+  try {
+    // Check if a user with the same UID already exists
+    let newUserRegistration = "";
+   
+      newUserRegistration = new MasterclassRegistrationSchema(req.body.formData);
+      await newUserRegistration.save()
+    res.status(201).json({ user: newUserRegistration });
+    // Create a new user registration entry
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const MailToUsersFromAdmin = async (req, res)=>{
+  try {
+    upload(req, res, async (uploadErr) => {
+      if (uploadErr) {
+        console.error('Error uploading file:', uploadErr);
+        return res.status(400).json({ error: 'File upload failed' });
+      }
+
+      const { recipients, subject, body } = req.body;
+      const fileContent = fs.readFileSync(req.file.path, 'utf-8');
+      const query={recipients, subject,body,fileContent}
+      sendEmailToUserFromAdmin(query)
+      // Rest of your email sending logic using Nodemailer
+      // ...
+
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Error sending email' });
+  }
+
+}
 
 export default router;

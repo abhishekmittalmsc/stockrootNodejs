@@ -10,6 +10,10 @@ const QuerySchema = mongoose.Schema({
   phone: { type: String },
   city: { type: String  },
   query: { type: String },
+  createdAt: {
+    type: Date,
+    default: new Date(),
+},
 });
 
 

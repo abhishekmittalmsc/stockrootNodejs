@@ -8,6 +8,10 @@ const NirmalForm = mongoose.Schema({
   name: { type: String  },
   email: { type: String },
   mobile: { type: String },
+  createdAt: {
+    type: Date,
+    default: new Date(),
+},
 });
 
 
