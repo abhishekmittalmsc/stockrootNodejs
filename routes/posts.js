@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {getUserMaster,MailToUsersFromAdmin, getNirmalData,getQueryData, getMRData, AdminAuth, MasterclassRegistration, commentsData, newComment, updateMobileNumber, successPayment, payment, courseDetails, createUser, userDetails,checkExisting, createUserMobileLogin, createQuery, allCourses,addToCart,CartData,CourseData, removeCart, NirmalFormSubmit } from '../controllers/posts.js';
+import {getBackTestingData, BackTestingExcelUpload,getUserMaster,MailToUsersFromAdmin, getNirmalData,getQueryData, getMRData, AdminAuth, MasterclassRegistration, commentsData, newComment, updateMobileNumber, successPayment, payment, courseDetails, createUser, userDetails,checkExisting, createUserMobileLogin, createQuery, allCourses,addToCart,CartData,CourseData, removeCart, NirmalFormSubmit } from '../controllers/posts.js';
 
 
 const router = express.Router();
@@ -29,6 +29,7 @@ router.post('/getQueryData', getQueryData)
 router.post('/getMRData', getMRData)
 router.post('/MasterclassRegistration', MasterclassRegistration)
 router.post('/MailToUsersfromAdmin', MailToUsersFromAdmin)
-
+router.post('/BackTestingExcelUpload', BackTestingExcelUpload)
+router.get('/getBackTestingData', getBackTestingData)
 
 export default router;

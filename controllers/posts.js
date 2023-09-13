@@ -10,9 +10,11 @@ import { sendEmailToAdmin, sendEmailToUser, sendEmailToUserFromAdmin} from "../m
 import { sendWhatsAppMessage } from "../middleware/Whatsapp.js";
 import { createRequire } from "module";
 import MasterclassRegistrationSchema from '../models/Masterclass.js'
+import BackTestData from '../models/BackTestingExcel.js'
 import multer from 'multer'
 import fs from 'fs';
 import path from 'path';
+import ExcelJS from 'exceljs'; // Import exceljs library
 
 const require = createRequire(import.meta.url);
 const storage = multer.diskStorage({
@@ -587,5 +589,47 @@ export const MailToUsersFromAdmin = async (req, res)=>{
   }
 
 }
+
+export const BackTestingExcelUpload = async (req, res) => {
+  try {
+    const { stockRootsStrategy, year, entryMonth, lotSize, expiryDate, entryDate, exitDate, investment, returnA, returnPercentage } = req.body;
+
+    const newData = new BackTestData({
+      stockRootsStrategy,
+      year,
+      entryMonth,
+      lotSize,
+      expiryDate: new Date(expiryDate),
+      entryDate: new Date(entryDate),
+      exitDate: new Date(exitDate),
+      investment,
+      returnA,
+      returnPercentage,
+    });
+
+    const savedData = await newData.save();
+    res.status(201).json(savedData);
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+export const getBackTestingData = async (req, res) => {
+  console.log('in backtesting data', BackTestData)
+
+  try {
+    const Backtest=await BackTestData.find({})
+    console.log('backtest', Backtest)
+      res.status(200).json({ data: Backtest })
+    
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Error sending email' });
+  }
+};
+
+
 
 export default router;
